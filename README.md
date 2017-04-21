@@ -10,6 +10,8 @@ Python爬虫，自动登录京东网站，查询商品库存，价格，显示�
 ## 运行环境
 Python 3.6
 
+## 加入定时组件APScheduler
+`conda install -c conda-forge apscheduler=3.3.1`
 
 ## 第三方库
 - [Requests][1]: 简单好用，功能强大的Http请求库
