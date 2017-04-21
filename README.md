@@ -13,7 +13,7 @@ Python 3.6
 ## 第三方库
 - [Requests][1]: 简单好用，功能强大的Http请求库
 - [beautifulsoup4][2]: HTML文档格式化及便签选择器
-- [APScheduler](http://apscheduler.readthedocs.io/en/latest/index.html): 简单实用的定时执行组件，Anaconda安装命令：`conda install -c conda-forge apscheduler=3.3.1`
+- [APScheduler](http://apscheduler.readthedocs.io/en/latest/index.html): 简单实用的定时执行组件，[Anaconda安装命令](https://anaconda.org/conda-forge/apscheduler)：`conda install -c conda-forge apscheduler=3.3.1`
 
 ## 环境配置
 ``` Python
