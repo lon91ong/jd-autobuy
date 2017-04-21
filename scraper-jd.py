@@ -44,7 +44,7 @@ if __name__ == '__main__':
                         help='Continue flash if good out of stock')
     parser.add_argument('-s', '--submit', 
                         action='store_true',
-                        help='Submit the order to Jing Dong')
+                        help='Submit the order to Jing Dong', default=False)
                 
     # example goods
     hw_watch = '2567304'
