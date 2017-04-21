@@ -352,7 +352,7 @@ class JDWrapper(object):
                     time.sleep(3)
             
             if not qr_ticket:
-                print('二维码登陆失败')
+                print('二维码登陆失败!')
                 return False
             
             # step 4: validate scan result
@@ -374,7 +374,7 @@ class JDWrapper(object):
             for k, v in list(resp.cookies.items()):
                 self.cookies[k] = v
             
-            print('登陆成功')
+            print('登陆成功!\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
             return True
         
         except Exception as e:
@@ -469,13 +469,13 @@ class JDWrapper(object):
         good_data['stock'], good_data['stockName'] = self.good_stock(stock_id=stock_id, area_id=area_id)
         #stock_str = u'有货' if good_data['stock'] == 33 else u'无货'
         
-        print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-        print('{0} > 商品详情'.format(time.ctime()))
-        print('编号：{0}'.format(good_data['id']))
-        print('库存：{0}'.format(good_data['stockName']))
-        print('价格：{0}'.format(good_data['price']))
-        print('名称：{0}'.format(good_data['name']))
-        print('链接：{0}'.format(good_data['link']))
+        #print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+        #print('{0} > 商品详情'.format(time.ctime()))
+        #print('编号：{0}'.format(good_data['id']))
+        #print('库存：{0}'.format(good_data['stockName']))
+        #print('价格：{0}'.format(good_data['price']))
+        #print('名称：{0}'.format(good_data['name']))
+        #print('链接：{0}'.format(good_data['link']))
         
         return good_data
         
@@ -541,9 +541,9 @@ class JDWrapper(object):
                 print('添加到购物车失败')
                 return False
             
-            print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-            print('{0} > 购买详情'.format(time.ctime()))
-            print('结果：{0}'.format(tags_val(tag)))
+        #    print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+        #    print('{0} > 购买详情'.format(time.ctime()))
+        #    print('结果：{0}'.format(tags_val(tag)))
 
             # change count
             self.buy_good_count(options.good, options.count)
@@ -576,7 +576,7 @@ class JDWrapper(object):
             if rs.status_code == 200:
                 js = json.loads(rs.text)
                 if js.get('pcount'):
-                    print('数量：%s @ %s' % (js['pcount'], js['pid']))
+                    #print('数量：%s @ %s' % (js['pcount'], js['pid']))
                     return True
             else:
                 print('购买 %d 失败' % count)
@@ -598,9 +598,9 @@ class JDWrapper(object):
             resp.encoding = 'utf-8'
             soup = bs4.BeautifulSoup(resp.text, "html.parser")
             
-            print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-            print('{0} > 购物车明细'.format(time.ctime()))
-            print(cart_header)
+           # print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+           # print('{0} > 购物车明细'.format(time.ctime()))
+           # print(cart_header)
             
             for item in soup.select('div.item-form'):
                 check = tags_val(item.select('div.cart-checkbox input'), key='checked')
@@ -610,12 +610,12 @@ class JDWrapper(object):
                 sums  = tags_val(item.select('div.p-sum strong'))
                 gname = tags_val(item.select('div.p-name a'))
                 #: ￥字符解析出错, 输出忽略￥
-                print(cart_format.format(check, count, price[1:], sums[1:], gname))
+                #print(cart_format.format(check, count, price[1:], sums[1:], gname))
 
             t_count = tags_val(soup.select('div.amount-sum em'))
             t_value = tags_val(soup.select('span.sumPrice em'))
-            print('总数: {0}'.format(t_count))
-            print('总额: {0}'.format(t_value[1:]))
+           # print('总数: {0}'.format(t_count))
+           # print('总额: {0}'.format(t_value[1:]))
 
         except Exception as e:
             print('Exp {0} : {1}'.format(FuncName(), e))
@@ -623,8 +623,8 @@ class JDWrapper(object):
 
     def order_info(self, submit=False):
         # get order info detail, and submit order
-        print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-        print('{0} > 订单详情'.format(time.ctime()))
+        #print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+        #print('{0} > 订单详情'.format(time.ctime()))
 
         try:
             order_url = 'http://trade.jd.com/shopping/order/getOrderInfo.action'
@@ -644,9 +644,9 @@ class JDWrapper(object):
                 snd_usr = tag_val(detail.find(id='sendMobile'))
                 snd_add = tag_val(detail.find(id='sendAddr'))
 
-                print('应付款：{0}'.format(payment))
-                print(snd_usr)
-                print(snd_add)
+                #print('应付款：{0}'.format(payment))
+                #print(snd_usr)
+                #print(snd_add)
 
             # just test, not real order
             if not submit:
