@@ -11,13 +11,17 @@ username / password is not working now.
 
 import argparse
 #from selenium import webdriver
+from datetime import datetime, date, time
+from apscheduler.schedulers.blocking import BlockingScheduler
+
 from JDWeb import JDWrapper
 
+jd = JDWrapper()
+
 def main(options):
-    # 
-    jd = JDWrapper()
-    if not jd.login_by_QR():
-        return
+
+    #if not jd.login_by_QR():
+    #    return
 
     while not jd.buy(options) and options.flush:
         time.sleep(options.wait / 1000.0)
@@ -41,10 +45,10 @@ if __name__ == '__main__':
                         help='Flush time interval, unit MS')
     parser.add_argument('-f', '--flush', 
                         action='store_true', 
-                        help='Continue flash if good out of stock')
+                        help='Continue flash if good out of stock', default=True)
     parser.add_argument('-s', '--submit', 
                         action='store_true',
-                        help='Submit the order to Jing Dong', default=False)
+                        help='Submit the order to Jing Dong', default=True)
                 
     # example goods
     hw_watch = '2567304'
@@ -52,6 +56,7 @@ if __name__ == '__main__':
     k2_blue = '4019900'
     
     options = parser.parse_args()
+    #print('+++++++*******************************+++++++')
     print(options)
   
     # for test
@@ -63,5 +68,11 @@ if __name__ == '__main__':
         print u'请输入用户名密码'
         exit(1)
     '''
-    main(options)
+    # longin
+    jd.login_by_QR()
+    # time task
+    sched = BlockingScheduler()
+    sched.add_job(main,'date', run_date=datetime.combine(date.today(), time(9,59,59)), args=[options])
+    sched.start()
+    #main(options)
     
