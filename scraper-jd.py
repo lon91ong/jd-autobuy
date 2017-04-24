@@ -14,7 +14,7 @@ import argparse
 from datetime import datetime, date, time
 from apscheduler.schedulers.blocking import BlockingScheduler
 
-from JDWeb import JDWrapper
+from JDWeb import JDWrapper, updateSystemTime
 
 jd = JDWrapper()
 
@@ -50,10 +50,13 @@ if __name__ == '__main__':
                         action='store_true',
                         help='Submit the order to Jing Dong', default=True)
                 
+    # synchronize net time
+    updateSystemTime()
     # example goods
-    hw_watch = '2567304'
     ac9 = '3968219'
+    k2 = '2615810'
     k2_blue = '4019900'
+    k3 = '3959251'
     
     options = parser.parse_args()
     #print('+++++++*******************************+++++++')
@@ -61,7 +64,7 @@ if __name__ == '__main__':
   
     # for test
     if options.good == '':
-        options.good = k2_blue
+        options.good = ac9
     
     '''
     if options.password == '' or options.username == '':
@@ -72,7 +75,7 @@ if __name__ == '__main__':
     jd.login_by_QR()
     # time task
     sched = BlockingScheduler()
-    sched.add_job(main,'date', run_date=datetime.combine(date.today(), time(9,59,59)), args=[options])
+    sched.add_job(main,'date', run_date=datetime.combine(date.today(), time(9,59,57)), args=[options])
     sched.start()
     #main(options)
     
