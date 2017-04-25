@@ -13,7 +13,7 @@ Python 3.6
 ## 第三方库
 - [Requests][1]: 简单好用，功能强大的Http请求库
 - [beautifulsoup4][2]: HTML文档格式化及便签选择器
-- [APScheduler](http://apscheduler.readthedocs.io/en/latest/index.html): 简单实用的定时执行组件，[Anaconda安装命令](https://anaconda.org/conda-forge/apscheduler)：`conda install -c conda-forge apscheduler=3.3.1`
+- [APScheduler][3]: 简单实用的定时执行组件，[Anaconda安装命令](https://anaconda.org/conda-forge/apscheduler)：`conda install -c conda-forge apscheduler=3.3.1`
 
 ## 环境配置
 ``` Python
@@ -26,7 +26,7 @@ pip install beautifulsoup4
 ``` cmd
 > python scraper-jd.py -h
 usage: scraper-jd.py [-h] [-u USERNAME] [-p PASSWORD] [-g GOOD] [-c COUNT]
-                     [-w WAIT] [-f] [-s]
+                     [-w WAIT] [-f] [-s] [-t 9:59:56]
 
 Simulate to login Jing Dong, and buy sepecified good
 
@@ -42,6 +42,7 @@ optional arguments:
   -w WAIT, --wait WAIT  Flush time interval, unit MS
   -f, --flush           Continue flash if good out of stock
   -s, --submit          Submit the order to Jing Dong
+  -t, --time            Time to place order
 ```
 
 ## 实例输出
@@ -83,3 +84,4 @@ Thu Mar 30 17:10:30 2017 > 订单详情
 
 [1]: http://docs.python-requests.org
 [2]: https://www.crummy.com/software/BeautifulSoup
+[3]: http://apscheduler.readthedocs.io/en/latest/index.html
