@@ -49,6 +49,8 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--submit', 
                         action='store_true',
                         help='Submit the order to Jing Dong', default=True)
+    parser.add_argument('-t', '--time', 
+                        help='Time of the order to Jing Dong', default='9:59:56')
                 
     # synchronize net time
     updateSystemTime()
@@ -75,7 +77,7 @@ if __name__ == '__main__':
     jd.login_by_QR()
     # time task
     sched = BlockingScheduler()
-    sched.add_job(main,'date', run_date=datetime.combine(date.today(), time(9,59,57)), args=[options])
+    sched.add_job(main,'date', run_date=datetime.combine(date.today(), datetime.strptime(options.time,"%H:%M:%S").time()), args=[options])
     sched.start()
     #main(options)
     
