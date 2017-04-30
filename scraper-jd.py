@@ -11,20 +11,25 @@ username / password is not working now.
 
 import argparse
 #from selenium import webdriver
-from datetime import datetime, date, time
+from datetime import datetime, date
 from apscheduler.schedulers.blocking import BlockingScheduler
-
+import time
 from JDWeb import JDWrapper, updateSystemTime
 
 jd = JDWrapper()
 
-def main(options):
+def main(opt):
 
     #if not jd.login_by_QR():
     #    return
-
-    while not jd.buy(options) and options.flush:
-        time.sleep(options.wait / 1000.0)
+    
+    # regular way
+    #while not jd.buy(opt) and options.flush:
+    #    time.sleep(options.wait / 1000.0)
+        
+    # qiang gou
+    while not jd.qiang(opt):
+        time.sleep(250/1000)
 
 
 if __name__ == '__main__':
@@ -41,7 +46,7 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--count', type=int, 
                         help='The count to buy', default=1)
     parser.add_argument('-w', '--wait', 
-                        type=int, default=500,
+                        type=int, default=1000,
                         help='Flush time interval, unit MS')
     parser.add_argument('-f', '--flush', 
                         action='store_true', 
@@ -50,7 +55,7 @@ if __name__ == '__main__':
                         action='store_true',
                         help='Submit the order to Jing Dong', default=True)
     parser.add_argument('-t', '--time', 
-                        help='Time of the order to Jing Dong', default='9:59:56')
+                        help='Time of the order to Jing Dong', default='9.09.59')
                 
     # synchronize net time
     updateSystemTime()
@@ -59,6 +64,7 @@ if __name__ == '__main__':
     k2 = '2615810'
     k2_blue = '4019900'
     k3 = '3959251'
+    mi6 = '4099139'
     
     options = parser.parse_args()
     #print('+++++++*******************************+++++++')
@@ -66,18 +72,23 @@ if __name__ == '__main__':
   
     # for test
     if options.good == '':
-        options.good = ac9
+        options.good = k2_blue
+    
+    options.time = datetime.combine(date.today(), datetime.strptime(options.time,"%H.%M.%S").time())
     
     '''
     if options.password == '' or options.username == '':
         print u'请输入用户名密码'
         exit(1)
     '''
+        
     # longin
     jd.login_by_QR()
+    good_data = jd.good_detail(options.good, options.area)
     # time task
     sched = BlockingScheduler()
-    sched.add_job(main,'date', run_date=datetime.combine(date.today(), datetime.strptime(options.time,"%H:%M:%S").time()), args=[options])
+    sched.add_job(main,'date', run_date=options.time, args=[good_data])
+    #sched.print_jobs()
     sched.start()
     #main(options)
     
