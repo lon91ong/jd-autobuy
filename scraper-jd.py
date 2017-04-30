@@ -55,7 +55,7 @@ if __name__ == '__main__':
                         action='store_true',
                         help='Submit the order to Jing Dong', default=True)
     parser.add_argument('-t', '--time', 
-                        help='Time of the order to Jing Dong', default='9.09.59')
+                        help='Time of the order to Jing Dong', default='9.59.59')
                 
     # synchronize net time
     updateSystemTime()
@@ -67,14 +67,13 @@ if __name__ == '__main__':
     mi6 = '4099139'
     
     options = parser.parse_args()
+    options.time = datetime.combine(date.today(), datetime.strptime(options.time,"%H.%M.%S").time())
     #print('+++++++*******************************+++++++')
     print(options)
   
     # for test
     if options.good == '':
         options.good = k2_blue
-    
-    options.time = datetime.combine(date.today(), datetime.strptime(options.time,"%H.%M.%S").time())
     
     '''
     if options.password == '' or options.username == '':
