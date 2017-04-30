@@ -541,6 +541,27 @@ class JDWrapper(object):
         return price
     
 
+    def qiang(self,good_data):
+        try:
+            # add to cart
+            resp = self.sess.get(good_data['link'], cookies = self.cookies)
+            soup = bs4.BeautifulSoup(resp.text, "html.parser")
+
+            # tag if add to cart succeed
+            tag = soup.select('h3.ftx-02')
+            if tag is None:
+                tag = soup.select('div.p-name a')
+
+            if tag is None or len(tag) == 0:
+                print('添加到购物车失败')
+                return False
+        except Exception as e:
+            print('Exp {0} : {1}'.format(FuncName(), e))
+        else:
+            #self.cart_detail()
+            return self.order_info(True)
+        return False
+        
     def buy(self, options):
         # stock detail
         good_data = self.good_detail(options.good)
@@ -582,7 +603,8 @@ class JDWrapper(object):
         #    print('结果：{0}'.format(tags_val(tag)))
 
             # change count
-            self.buy_good_count(options.good, options.count)
+            if options.count != 1:
+                self.buy_good_count(options.good, options.count)
             
         except Exception as e:
             print('Exp {0} : {1}'.format(FuncName(), e))
@@ -720,4 +742,3 @@ class JDWrapper(object):
             print('Exp {0} : {1}'.format(FuncName(), e))
 
         return False
-
