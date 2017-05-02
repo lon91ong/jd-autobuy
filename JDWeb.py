@@ -4,17 +4,13 @@ Created on Fri Apr 21 11:09:42 2017
 
 @author: lon91ong
 """
-import bs4
-import requests
+import bs4, requests
+from datetime import timedelta, datetime
 import requests.packages.urllib3
 #import imp
 requests.packages.urllib3.disable_warnings()
 
-import os
-import time
-import json
-import random
-import ctypes
+import os, time, json, random, ctypes
 import sys
 #imp.reload(sys)
 #sys.setdefaultencoding('utf-8')
@@ -22,7 +18,6 @@ import sys
 FuncName = lambda n=0: sys._getframe(n + 1).f_code.co_name
                                     
 SetSystemTime = ctypes.windll.kernel32.SetSystemTime
-GetSystemTime = ctypes.windll.kernel32.GetSystemTime
 
 class SYSTEMTIME(ctypes.Structure):
     c_ushort= ctypes.c_ushort
@@ -54,9 +49,10 @@ def updateSystemTime():
         return False
     return True
 
-def printCurTime():
-    now= time.localtime(time.time())
-    print('当前系统时间:', time.strftime("%Y-%m-%d %H:%M:%S", now))
+def respTime(date):
+    resp_time = datetime.strptime(date, "%d %b %Y %H:%M:%S")
+    return str(resp_time + timedelta(hours = 8))[-8:]
+    
     
 def tags_val(tag, key='', index=0):
     '''
@@ -349,6 +345,7 @@ class JDWrapper(object):
             
             ## scan QR code with phone
             os.system('start ' + image_file)
+            print(resp.iter_content())
 
             # step 3： check scan result
             ## mush have
@@ -411,6 +408,7 @@ class JDWrapper(object):
                 self.cookies[k] = v
             
             print('登陆成功!\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+            plt.close()
             return True
         
         except Exception as e:
@@ -444,7 +442,7 @@ class JDWrapper(object):
             # get stock state
             resp = self.sess.get(stock_url, params=payload)
             if not self.response_status(resp):
-                print('获取商品库存失败')
+                print(respTime(resp.headers['date'][5:25]),'获取商品库存失败')
                 return (0, '')
             
             # return json
@@ -541,7 +539,10 @@ class JDWrapper(object):
         return price
     
 
-    def qiang(self,good_data):
+    def regular_qiang(self,good_data):
+        '''
+        不预先添加购物车
+        '''
         try:
             # add to cart
             resp = self.sess.get(good_data['link'], cookies = self.cookies)
@@ -553,13 +554,38 @@ class JDWrapper(object):
                 tag = soup.select('div.p-name a')
 
             if tag is None or len(tag) == 0:
-                print('添加到购物车失败')
+                print(respTime(resp.headers['date'][5:25]),'添加到购物车失败')
                 return False
         except Exception as e:
             print('Exp {0} : {1}'.format(FuncName(), e))
         else:
             #self.cart_detail()
             return self.order_info(True)
+        return False
+    
+    def pre_add_cart(self,good_data):
+        '''
+        预先添加购物车
+        '''
+        try:
+            # add to cart
+            resp = self.sess.get(good_data['link'], cookies = self.cookies)
+            soup = bs4.BeautifulSoup(resp.text, "html.parser")
+
+            # tag if add to cart succeed
+            tag = soup.select('h3.ftx-02')
+            if tag is None:
+                tag = soup.select('div.p-name a')
+
+            if tag is None or len(tag) == 0:
+                print(respTime(resp.headers['date'][5:25]),'添加到购物车失败')
+                return False
+        except Exception as e:
+            print('Exp {0} : {1}'.format(FuncName(), e))
+        else:
+            self.cart_detail()
+            #return self.order_info(True)
+            return True
         return False
         
     def buy(self, options):
@@ -727,11 +753,48 @@ class JDWrapper(object):
             if rp.status_code == 200:
                 js = json.loads(rp.text)
                 if js['success'] == True:
-                    print('下单成功！订单号：{0}'.format(js['orderId']))
+                    print(respTime(rp.headers['date'][5:25]),'下单成功！订单号：{0}'.format(js['orderId']))
                     print('请前往东京官方商城付款')
                     return True
                 else:
-                    print('下单失败！<{0}: {1}>'.format(js['resultCode'], js['message']))
+                    print(respTime(rp.headers['date'][5:25]),'下单失败！<{0}: {1}>'.format(js['resultCode'], js['message']))
+                    if js['resultCode'] == '60017':
+                        # 60017: 您多次提交过快，请稍后再试
+                        time.sleep(1)
+            else:
+                print(respTime(rp.headers['date'][5:25]),'请求失败. StatusCode:', rp.status_code)
+        
+        except Exception as e:
+            print('Exp {0} : {1}'.format(FuncName(), e))
+
+        return False
+    
+    def oder_submit(self):
+        '''
+        直接提交订单
+        '''
+        try:
+            payload = {
+                'overseaPurchaseCookies': '',
+                'submitOrderParam.btSupport': '1',
+                'submitOrderParam.ignorePriceChange': '0',
+                'submitOrderParam.sopNotPutInvoice': 'false',
+                'submitOrderParam.trackID': self.trackid,
+                'submitOrderParam.eid': self.eid,
+                'submitOrderParam.fp': self.fp,
+            }
+            
+            order_url = 'http://trade.jd.com/shopping/order/submitOrder.action'
+            rp = self.sess.post(order_url, params=payload, cookies = self.cookies)
+
+            if rp.status_code == 200:
+                js = json.loads(rp.text)
+                if js['success'] == True:
+                    print(respTime(rp.headers['date'][5:25]),'下单成功！订单号：{0}'.format(js['orderId']))
+                    print('请前往东京官方商城付款!')
+                    return True
+                else:
+                    print(respTime(rp.headers['date'][5:25]),'下单失败！<{0}: {1}>'.format(js['resultCode'], js['message']))
                     if js['resultCode'] == '60017':
                         # 60017: 您多次提交过快，请稍后再试
                         time.sleep(1)
@@ -742,3 +805,4 @@ class JDWrapper(object):
             print('Exp {0} : {1}'.format(FuncName(), e))
 
         return False
+
