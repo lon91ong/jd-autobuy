@@ -13,12 +13,12 @@ import argparse
 #from selenium import webdriver
 from datetime import datetime, date
 from apscheduler.schedulers.blocking import BlockingScheduler
-import time
+import time, os
 from JDWeb import JDWrapper, updateSystemTime
 
 jd = JDWrapper()
 
-def main(opt):
+def reg_Q(opt):
 
     #if not jd.login_by_QR():
     #    return
@@ -28,9 +28,12 @@ def main(opt):
     #    time.sleep(options.wait / 1000.0)
         
     # qiang gou
-    while not jd.qiang(opt):
+    while not jd.regular_qiang(opt):
         time.sleep(250/1000)
-
+        
+def lite_Q():
+    while not jd.oder_submit():
+        time.sleep(250/1000)
 
 if __name__ == '__main__':
     # help message
@@ -69,8 +72,8 @@ if __name__ == '__main__':
     options = parser.parse_args()
     options.time = datetime.combine(date.today(), datetime.strptime(options.time,"%H.%M.%S").time())
     #print('+++++++*******************************+++++++')
-    print(options)
-  
+    print(options)  
+
     # for test
     if options.good == '':
         options.good = k2_blue
@@ -86,8 +89,22 @@ if __name__ == '__main__':
     good_data = jd.good_detail(options.good, options.area)
     # time task
     sched = BlockingScheduler()
-    sched.add_job(main,'date', run_date=options.time, args=[good_data])
+    
+    if jd.pre_add_cart(good_data):
+        # 快捷抢购，预先添加购物车
+        print("预添加成功！快捷抢购中...")
+        sched.add_job(lite_Q,'date', run_date=options.time)
+    else:
+        # 无法预添加购物车则进行常规抢购
+        print("预添加失败！常规抢购中...")
+        sched.add_job(reg_Q,'date', run_date=options.time, args=[good_data])
     #sched.print_jobs()
-    sched.start()
-    #main(options)
+    print('Press Ctrl+{0} to exit'.format('Pause(Break)' if os.name == 'nt' else 'C'))
+    try:
+        sched.start()
+    except (KeyboardInterrupt, SystemExit):
+        sched.shutdown(wait=False)
+        print('Exit The Job!')
+    else:
+        sched.shutdown(wait=True)
     
