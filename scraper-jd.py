@@ -26,14 +26,18 @@ def reg_Q(opt):
     # regular way
     #while not jd.buy(opt) and options.flush:
     #    time.sleep(options.wait / 1000.0)
-        
+    n = 0
     # qiang gou
-    while not jd.regular_qiang(opt):
+    while n<10 and not jd.regular_qiang(opt):
         time.sleep(250/1000)
-        
+        n+=1
+    exit()
 def lite_Q():
-    while not jd.oder_submit():
+    n = 0
+    while n<10 and not jd.oder_submit():
         time.sleep(250/1000)
+        n+=1
+    exit()
 
 if __name__ == '__main__':
     # help message
@@ -58,7 +62,7 @@ if __name__ == '__main__':
                         action='store_true',
                         help='Submit the order to Jing Dong', default=True)
     parser.add_argument('-t', '--time', 
-                        help='Time of the order to Jing Dong', default='9.59.59')
+                        help='Time of the order to Jing Dong', default='14.08.30')
                 
     # synchronize net time
     updateSystemTime()
@@ -72,11 +76,11 @@ if __name__ == '__main__':
     options = parser.parse_args()
     options.time = datetime.combine(date.today(), datetime.strptime(options.time,"%H.%M.%S").time())
     #print('+++++++*******************************+++++++')
-    print(options)  
-
+    print(options)
+  
     # for test
     if options.good == '':
-        options.good = k2_blue
+        options.good = mi6
     
     '''
     if options.password == '' or options.username == '':
@@ -89,7 +93,7 @@ if __name__ == '__main__':
     good_data = jd.good_detail(options.good, options.area)
     # time task
     sched = BlockingScheduler()
-    
+    print(good_data['link'])
     if jd.pre_add_cart(good_data):
         # 快捷抢购，预先添加购物车
         print("预添加成功！快捷抢购中...")
