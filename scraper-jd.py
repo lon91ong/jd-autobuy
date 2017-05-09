@@ -62,7 +62,7 @@ if __name__ == '__main__':
                         action='store_true',
                         help='Submit the order to Jing Dong', default=True)
     parser.add_argument('-t', '--time', 
-                        help='Time of the order to Jing Dong', default='14.08.30')
+                        help='Time of the order to Jing Dong', default='14.47.30')
                 
     # synchronize net time
     updateSystemTime()
@@ -91,10 +91,11 @@ if __name__ == '__main__':
     # longin
     jd.login_by_QR()
     good_data = jd.good_detail(options.good, options.area)
+    #print(good_data)
     # time task
     sched = BlockingScheduler()
-    print(good_data['link'])
-    if jd.pre_add_cart(good_data):
+    
+    if len(good_data['link']) >10 and jd.pre_add_cart(good_data):
         # 快捷抢购，预先添加购物车
         print("预添加成功！快捷抢购中...")
         sched.add_job(lite_Q,'date', run_date=options.time)
