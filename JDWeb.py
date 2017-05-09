@@ -4,8 +4,9 @@ Created on Fri Apr 21 11:09:42 2017
 
 @author: lon91ong
 """
-import bs4, requests
+import requests
 from datetime import timedelta, datetime
+from bs4 import BeautifulSoup
 import requests.packages.urllib3
 #import imp
 requests.packages.urllib3.disable_warnings()
@@ -116,9 +117,7 @@ class JDWrapper(object):
             'Connection' : 'keep-alive',
         }
         
-        self.cookies = {
-
-        }
+        self.cookies = {}
 
         '''
         try:
@@ -226,7 +225,7 @@ class JDWrapper(object):
         try:
             # 2016/09/17 PhantomJS can't login anymore
             self.browser.get(self.home)
-            soup = bs4.BeautifulSoup(self.browser.page_source, "html.parser")
+            soup = BeautifulSoup(self.browser.page_source, "html.parser")
             
             # set cookies from PhantomJS
             for cookie in self.browser.get_cookies():
@@ -408,7 +407,6 @@ class JDWrapper(object):
                 self.cookies[k] = v
             
             print('登陆成功!\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-            plt.close()
             return True
         
         except Exception as e:
@@ -475,19 +473,29 @@ class JDWrapper(object):
         try:
             # shop page
             stock_link = 'http://item.jd.com/{0}.html'.format(stock_id)
+            n = 0
+            tags = []
+            #while n <10 and len(tags) == 0: #try 5 times
             resp = self.sess.get(stock_link)
-
+    
             # good page
-            soup = bs4.BeautifulSoup(resp.text, "html.parser")
+            soup = BeautifulSoup(resp.text, "html.parser")
             
             # good name
             tags = soup.select('div#name h1')
             if len(tags) == 0:
                 tags = soup.select('div.sku-name')
             good_data['name'] = tags_val(tags).strip(' \t\r\n')
-
+    
             # cart link
-            tags = soup.select('a#InitCartUrl')
+            tags = soup.select('a#choose-btn-ko')   #special
+            if len(tags) == 0:
+                tags = soup.select('a#InitCartUrl') #regular
+            elif tags_val(tags, key='href') == '#none':
+                tags = []   # next cycle
+                #n+=1
+            #if len(tags) == 0:
+                #raise Exception("Invalid stock URL!")
             link = tags_val(tags, key='href')
             
             if link[:2] == '//': link = 'http:' + link
@@ -538,15 +546,67 @@ class JDWrapper(object):
 
         return price
     
+    def lite_detail(self, stock_id):
+                # return good detail
+        good_data = {
+            'id' : stock_id,
+            'link' : '',
+        }
+        
+        try:
+            # shop page
+            stock_link = 'http://item.jd.com/{0}.html'.format(stock_id)
+            n = 0
+            tags = []
+            while n <10 and len(tags) == 0: #try 10 times
+                resp = self.sess.get(stock_link)
+        
+                # good page
+                soup = BeautifulSoup(resp.text, "html.parser")
+                
+                # cart link
+                tags = soup.select('a#choose-btn-ko')   #special
+                if len(tags) == 0:
+                    tags = soup.select('a#InitCartUrl') #regular
+                elif tags_val(tags, key='href') == '#none':
+                    tags = []   # next cycle
+                n+=1
+            if len(tags) == 0:
+                raise Exception("Invalid stock URL!")
+            link = tags_val(tags, key='href')
+            
+            if link[:2] == '//': link = 'http:' + link
+            good_data['link'] = link
+        
+        except Exception as e:
+            print('Exp {0} : {1}'.format(FuncName(), e))
+            #pass
 
+        # good price
+        #good_data['price'] = self.good_price(stock_id)
+        
+        # good stock
+        #good_data['stock'], good_data['stockName'] = self.good_stock(stock_id=stock_id, area_id=area_id)
+        #stock_str = u'有货' if good_data['stock'] == 33 else u'无货'
+        
+        return good_data
+        
     def regular_qiang(self,good_data):
         '''
         不预先添加购物车
         '''
+        n = 0
+        while n <10 and good_data['link']=='':
+            good_data = self.lite_detail(good_data['id'])
+            n+=1
+        if n == 10 and good_data['link']=='':
+            print("Can't get the addcart link!")
+            return False
+        
         try:
             # add to cart
             resp = self.sess.get(good_data['link'], cookies = self.cookies)
-            soup = bs4.BeautifulSoup(resp.text, "html.parser")
+            soup = BeautifulSoup(resp.text, "html.parser")
 
             # tag if add to cart succeed
             tag = soup.select('h3.ftx-02')
@@ -570,7 +630,7 @@ class JDWrapper(object):
         try:
             # add to cart
             resp = self.sess.get(good_data['link'], cookies = self.cookies)
-            soup = bs4.BeautifulSoup(resp.text, "html.parser")
+            soup = BeautifulSoup(resp.text, "html.parser")
 
             # tag if add to cart succeed
             tag = soup.select('h3.ftx-02')
@@ -613,7 +673,7 @@ class JDWrapper(object):
         try:
             # add to cart
             resp = self.sess.get(link, cookies = self.cookies)
-            soup = bs4.BeautifulSoup(resp.text, "html.parser")
+            soup = BeautifulSoup(resp.text, "html.parser")
 
             # tag if add to cart succeed
             tag = soup.select('h3.ftx-02')
@@ -680,7 +740,7 @@ class JDWrapper(object):
         try:    
             resp = self.sess.get(cart_url, cookies = self.cookies)
             resp.encoding = 'utf-8'
-            soup = bs4.BeautifulSoup(resp.text, "html.parser")
+            soup = BeautifulSoup(resp.text, "html.parser")
             
            # print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
            # print('{0} > 购物车明细'.format(time.ctime()))
@@ -718,7 +778,7 @@ class JDWrapper(object):
 
             # get preorder page
             rs = self.sess.get(order_url, params=payload, cookies = self.cookies)
-            soup = bs4.BeautifulSoup(rs.text, "html.parser")
+            soup = BeautifulSoup(rs.text, "html.parser")
 
             # order summary
             payment = tag_val(soup.find(id='sumPayPriceId'))
