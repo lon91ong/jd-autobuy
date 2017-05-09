@@ -547,11 +547,8 @@ class JDWrapper(object):
         return price
     
     def lite_detail(self, stock_id):
-                # return good detail
-        good_data = {
-            'id' : stock_id,
-            'link' : '',
-        }
+        # return good addcart link
+        link = ''
         
         try:
             # shop page
@@ -576,20 +573,12 @@ class JDWrapper(object):
             link = tags_val(tags, key='href')
             
             if link[:2] == '//': link = 'http:' + link
-            good_data['link'] = link
         
         except Exception as e:
             print('Exp {0} : {1}'.format(FuncName(), e))
             #pass
 
-        # good price
-        #good_data['price'] = self.good_price(stock_id)
-        
-        # good stock
-        #good_data['stock'], good_data['stockName'] = self.good_stock(stock_id=stock_id, area_id=area_id)
-        #stock_str = u'有货' if good_data['stock'] == 33 else u'无货'
-        
-        return good_data
+        return link
         
     def regular_qiang(self,good_data):
         '''
@@ -597,7 +586,7 @@ class JDWrapper(object):
         '''
         n = 0
         while n <10 and good_data['link']=='':
-            good_data = self.lite_detail(good_data['id'])
+            good_data['link'] = self.lite_detail(good_data['id'])
             n+=1
         if n == 10 and good_data['link']=='':
             print("Can't get the addcart link!")
