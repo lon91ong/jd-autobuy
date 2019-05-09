@@ -1,5 +1,13 @@
 = 理财学习笔记
 
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
 == 基金
 
 .股票代码规则
@@ -22,4 +30,4 @@
 
 *市盈率* 也称本益比，英文叫price earnings ratio，简称P/E.
 
-> 指市价和盈利的比值，或者说是你投入本金和收益的比值，也就是这家企业最真实的投资回报率。
+TIP: 指市价和盈利的比值，或者说是你投入本金和收益的比值，也就是这家企业最真实的投资回报率。
