@@ -39,7 +39,7 @@ TIP: 指市价和盈利的比值，或者说是你投入本金和收益的比值
 == 几种指数
 
 .常见宽指
-////[format="csv", options="header"]
+//[format="csv", options="header"]
 [cols="2,2,2a,2a,5a"]
 |===
 |指数名|代码|指标网址|追踪基金|备注
