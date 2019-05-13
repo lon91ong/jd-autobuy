@@ -1,4 +1,4 @@
-= 理财学习笔记
+= 理财学习笔记 https://ericfu.me/index-fund-guide-notes/[简单笔记参考]
 
 ifdef::env-github[]
 :tip-caption: :bulb:
@@ -180,3 +180,5 @@ NOTE: 变种公式适用条件：公司的盈利虽然不稳定，但是要求�
 . 盈利处于不稳定状态或呈周期性变化，但行业没有长期亏损记录的指数 -- 适用变种的博格公式法
 
 . 长期亏损的指数 -- 请绕行
+
+image::指数适用.png[]
