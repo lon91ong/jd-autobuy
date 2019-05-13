@@ -157,4 +157,4 @@ Callouts are a great way to explain code segment and are, in fact, the one of th
 <2> The block underneath allows you to explain the code sample without getting in the way
 
 == What Next?
-I'll add more comments here as I write and find interesting nuances. In the meantime, the link::http://asciidoctor.org[Asciidoctor project] has _GREAT_ link::http://asciidoctor.org/docs/user-manual/[user manual] and link::http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[Quick Reference]!
+I'll add more comments here as I write and find interesting nuances. In the meantime, the http://asciidoctor.org[Asciidoctor project] has _GREAT_ http://asciidoctor.org/docs/user-manual/[user manual] and http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[Quick Reference]!
