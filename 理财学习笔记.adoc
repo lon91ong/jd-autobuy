@@ -6,6 +6,7 @@ ifdef::env-github[]
 :important-caption: :heavy_exclamation_mark:
 :caution-caption: :fire:
 :warning-caption: :warning:
+:imagesdir: ./imgs/
 endif::[]
 
 https://github.com/paddingme/Learning-HTML-CSS/issues/17[Emmet语法备查], http://validator.idpf.org/[Epub排错]
@@ -119,3 +120,5 @@ TIP: 股息率和盈利收益率之间有很大的关系。股息率＝股息/�
 |中证白酒|399997|161725|
 |中证养老||000968|
 |===
+
+image::常用指数.png[]
