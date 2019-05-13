@@ -202,4 +202,4 @@ stem:[n] 是放大倍数，建议 stem:[n=1]。
 
 . 定期不定额（博格公式法）
 
-stem:[每个月定投金额 = \left(\frac{首次的市盈率}{当月的市盈率} \right) ^ n]
+latexmath:[每个月定投金额 = \left(\frac{首次的市盈率}{当月的市盈率} \right) ^ n]
