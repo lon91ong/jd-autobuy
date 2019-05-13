@@ -1,4 +1,4 @@
-= 理财学习笔记 https://ericfu.me/index-fund-guide-notes/[简单笔记参考]
+= 理财学习笔记
 
 ifdef::env-github[]
 :tip-caption: :bulb:
@@ -10,6 +10,7 @@ ifdef::env-github[]
 :stem: latexmath
 endif::[]
 
+https://ericfu.me/index-fund-guide-notes/[简记参考], 
 https://github.com/paddingme/Learning-HTML-CSS/issues/17[Emmet语法备查], http://validator.idpf.org/[Epub排错]
 
 == 基金
@@ -203,3 +204,5 @@ stem:[n] 是放大倍数，建议 stem:[n=1]。
 . 定期不定额（博格公式法）
 
 latexmath:[每个月定投金额 = \left(\frac{首次的市盈率}{当月的市盈率} \right) ^ n]
+
+latexmath:[C = \alpha + \beta Y^{\gamma} + \epsilon]
