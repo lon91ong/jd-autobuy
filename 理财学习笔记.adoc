@@ -7,6 +7,7 @@ ifdef::env-github[]
 :caution-caption: :fire:
 :warning-caption: :warning:
 :imagesdir: ./imgs/
+:stem: latexmath
 endif::[]
 
 https://github.com/paddingme/Learning-HTML-CSS/issues/17[Emmet语法备查], http://validator.idpf.org/[Epub排错]
