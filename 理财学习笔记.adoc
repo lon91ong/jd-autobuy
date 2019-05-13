@@ -205,5 +205,9 @@ stem:[n] 是放大倍数，建议 stem:[n=1]。
 
 stem:[每个月定投金额 = \left(\frac{首次的市盈率}{当月的市盈率} \right) ^ n]
 
-latexmath:[C = \alpha + \beta Y^{\gamma} + \epsilon]
+$C = \alpha + \beta Y^{\gamma} + \epsilon$
+
+$$
+C = \alpha + \beta Y^{\gamma} + \epsilon
+$$
 
